@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma-client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  scores Score[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verification")
+}
+
+model Quiz {
+  id      String @id @default(uuid())
+  topicId String
+
+  question String
+  options  String[] // Array of options
+  answer   Int // Index of the correct option in the options array
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // one-to-many relationship with Topic
+  // A topic can have multiple quizzes
+  // A quiz belongs to one topic
+  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Score {
+  id      String @id @default(uuid())
+  userId  String
+  topicId String
+
+  value     Int
+  createdAt DateTime @default(now())
+
+  // many-to-one relationship with User and Topic
+  // A user can have multiple scores for different topics
+  // A topic can have multiple scores from different users
+  // A score belongs to one user and one topic
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Ensure a user can have only one score per topic
+  @@unique([userId, topicId])
+}
+
+// topic of the quiz
+model Topic {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  scores  Score[]
+  quizzes Quiz[]
+}

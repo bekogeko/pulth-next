@@ -2,3 +2,11 @@
 .next
 node_modules
 .DS_Store
+.vercel
+
+/src/generated/prisma-client
+/prisma/migrations/
+
+.env
+
+.env.development.local
