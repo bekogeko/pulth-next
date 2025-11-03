@@ -3,12 +3,10 @@ import { LoginForm } from "@/app/ui/loginForm";
 
 export default function Login() {
     return (
-        <div>
-            <h1 className={"text-5xl text-center"}>Login</h1>
-            <div className={"text-center my-4"}>
-                <Link href={"/"}>Home Page</Link>
+            <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+                <div className="w-full max-w-sm">
+                    <LoginForm />
+                </div>
             </div>
-            <LoginForm />
-        </div>
     );
 }

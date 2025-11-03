@@ -1,25 +1,20 @@
-"use client";
-
-import { useSession,signOut } from "@/lib/auth-client";
+"use client"
+import {signOut} from "@/lib/auth-client";
+import {Button} from "@/components/ui/button";
+import {useRouter} from "next/navigation";
 
 function LogoutButton() {
 
-    const { data,isPending } = useSession();
+    const router = useRouter();
+    return <form method="POST">
+        <Button variant={"outline"} type="submit" onClick={async () => {
+            await signOut();
+            router.push("/");
+        }}>
+            Logout
+        </Button>
+    </form>
 
-
-    return <div>
-        {
-            data ? <form  method="POST">
-                <button type="submit" disabled={isPending} onClick={async()=>{
-                    signOut()
-                }} className="border border-red-500 hover:border-red-700 p-2 rounded">Logout</button>
-            </form> : <div>
-                nope login
-            </div>
-        }
-
-
-    </div>
 }
 
 export default LogoutButton;
