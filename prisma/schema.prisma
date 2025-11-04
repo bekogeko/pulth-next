@@ -26,7 +26,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  scores Score[]
+  scores  Score[]
+  Article Article[]
 
   @@unique([email])
   @@map("user")
@@ -124,4 +125,28 @@ model Topic {
 
   scores  Score[]
   quizzes Quiz[]
+}
+
+model Article {
+  id       String @id @default(uuid())
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  title       String
+  description String
+  slug        String @unique
+
+  // body content in json format
+  // bodyData Json
+  // draftBodyData Json
+
+  isPublished Boolean  @default(false)
+  keywords    String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Votes
+  // Comments
+  // Tags(topic?) on Articles
 }
