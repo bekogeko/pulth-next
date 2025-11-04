@@ -25,7 +25,7 @@ export function RegisterForm() {
     const router = useRouter();
 
     return (
-        <div className={cn("flex flex-col gap-6")}>
+        <form className={cn("flex flex-col gap-6")}>
             <Card>
                 <CardHeader className="text-center">
                     <CardTitle className="text-xl">Create your account</CardTitle>
@@ -43,6 +43,7 @@ export function RegisterForm() {
                                 type="text"
                                 placeholder="John Doe"
                                 required
+                                autoComplete={"name"}
                                 onChange={(e) => {
                                     setName(e.target.value)
                                 }}
@@ -56,6 +57,7 @@ export function RegisterForm() {
                                 type="email"
                                 placeholder="m@example.com"
                                 required
+                                autoComplete={"email"}
                                 onChange={(e) => {
                                     setEmail(e.target.value)
                                 }}
@@ -65,18 +67,28 @@ export function RegisterForm() {
                             <Field className="grid grid-cols-2 gap-4">
                                 <Field>
                                     <FieldLabel htmlFor="password">Password</FieldLabel>
-                                    <Input id="password" type="password" required onChange={(e) => {
-                                        setPassword(e.target.value)
-                                    }}/>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        required
+                                        autoComplete="new-password"
+                                        onChange={(e) => {
+                                            setPassword(e.target.value)
+                                        }}/>
                                 </Field>
                                 <Field>
                                     <FieldLabel htmlFor="confirm-password">
                                         Confirm Password
                                     </FieldLabel>
-                                    <Input aria-invalid={password !== confirmPassword} id="confirm-password"
-                                           type="password" required onChange={(e) => {
-                                        setConfirmPassword(e.target.value)
-                                    }}/>
+                                    <Input
+                                        aria-invalid={password !== confirmPassword}
+                                        id="confirm-password"
+                                        type="password"
+                                        required
+                                        autoComplete={"new-password"}
+                                        onChange={(e) => {
+                                            setConfirmPassword(e.target.value)
+                                        }}/>
                                 </Field>
                             </Field>
                             <FieldDescription>
@@ -122,7 +134,7 @@ export function RegisterForm() {
                 By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
                 and <a href="#">Privacy Policy</a>.
             </FieldDescription>
-        </div>
+        </form>
     )
 }
 

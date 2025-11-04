@@ -6,8 +6,12 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/comp
 import {Field, FieldDescription, FieldGroup, FieldLabel,} from "@/components/ui/field"
 import {Input} from "@/components/ui/input"
 import {signIn} from "@/lib/auth-client";
+
+import {toast} from "sonner";
 import {useState} from "react";
 import Link from "next/link";
+import {Checkbox} from "@/components/ui/checkbox";
+import {Label} from "@/components/ui/label";
 
 export function LoginForm({
                               className,
@@ -17,7 +21,7 @@ export function LoginForm({
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    // const [rememberMe, setRememberMe] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
     const [loading, setLoading] = useState(false);
 
     return (
@@ -39,6 +43,7 @@ export function LoginForm({
                                     type="email"
                                     placeholder="m@example.com"
                                     required
+                                    autoComplete={"email"}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                             </Field>
@@ -56,15 +61,29 @@ export function LoginForm({
                                     id="password"
                                     type="password"
                                     required
+                                    autoComplete={"current-password"}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
+                            </Field>
+                            <Field>
+
+                                {/*<Checkbox name={"remember-me"} autoCorrect={"remember-me"}/>*/}
+                                {/*<Label htmlFor="rememberMe">*/}
+                                {/*    Remember me*/}
+                                {/*</Label>*/}
+                                <div className="flex items-start gap-3">
+                                    <Checkbox id="terms" defaultChecked/>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="terms-2">Remember me</Label>
+                                    </div>
+                                </div>
                             </Field>
                             <Field>
                                 <Button type="submit" disabled={loading} onClick={() => {
                                     signIn.email({
                                         email: email,
                                         password: password,
-                                        // rememberMe: rememberMe,
+                                        rememberMe: rememberMe,
                                         callbackURL: "/"
                                     }, {
                                         onRequest: (ctx) => {
@@ -73,6 +92,12 @@ export function LoginForm({
                                         onResponse: (ctx) => {
                                             setLoading(false);
                                         },
+                                        onError: (ctx) => {
+                                            toast.error(ctx.error.message);
+                                        },
+                                        onSuccess: (ctx) => {
+                                            toast.success("Logged in successfully!");
+                                        }
                                     })
                                 }}>Login</Button>
 
