@@ -26,6 +26,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
+  role String @default("user") // user, admin (noone else roles for now)
+
   scores  Score[]
   Article Article[]
 
