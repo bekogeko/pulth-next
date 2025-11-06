@@ -51,7 +51,7 @@ export default async function ArticleSlugPage(
 
     await Promise.all([articlePrefetch, authorPrefetch]);
 
-    return <div>
+    return <div className="select-text dark:selection:text-indigo-500">
         <HydrationBoundary state={dehydrate(queryClient)}>
             <ArticleRenderer/>
         </HydrationBoundary>

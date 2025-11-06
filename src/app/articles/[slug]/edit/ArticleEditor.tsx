@@ -73,7 +73,8 @@ export default function ArticleEditor() {
     }, [])
 
 
-    return <div className={""}>
+    return <div className={"prose-base dark:prose-invert select-text dark:selection:text-indigo-500   "}>
+        <h1 className={"text-center mt-16"}>{!isLoading && data && data.title}</h1>
         <div id={"editorjs"} ref={elementRef} data-enable-grammarly="true"></div>
     </div>;
 }
