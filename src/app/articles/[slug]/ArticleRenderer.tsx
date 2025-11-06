@@ -4,28 +4,32 @@ import {useParams} from 'next/navigation'
 import {getArticleBySlug} from "@/app/actions/article";
 import {ReactNode} from "react";
 
-
-type BlockType = {
-    id: string;
-    type: "paragraph";
-    data: {
-        text: string;
-    };
-} | {
-    id: string;
-    type: "header";
-    data: {
-        text: string;
-        level: number;
-    }
-} | {
-    id: string;
-    type: "list";
-    data: {
-        items: string[];
-        style: "ordered" | "unordered";
-    }
-};
+//
+// type BlockType = {
+//     id: string;
+//     type: "paragraph";
+//     data: {
+//         text: string;
+//     };
+// } | {
+//     id: string;
+//     type: "header";
+//     data: {
+//         text: string;
+//         level: number;
+//     }
+// } | {
+//     id: string;
+//     type: "list";
+//     data: {
+//         items: string[];
+//         style: "ordered" | "unordered";
+//     }
+// };
+type Block =
+    | { id: string; type: "paragraph"; data: { text: string } }
+    | { id: string; type: "header"; data: { text: string; level: number } }
+    | { id: string; type: "list"; data: { items: string[]; style: "ordered" | "unordered" } };
 
 function Header(props: { level: number, children: ReactNode }) {
 
@@ -61,10 +65,10 @@ export default function ArticleRenderer() {
         {isLoading && <p>Loading article...</p>}
         {isError && <p>Error loading article.</p>}
         {data && (
-            <article className="prose-slate dark:prose-invert prose lg:prose-xl max-w-none pt-16">
+            <article className="prose-slate dark:prose-invert prose lg:prose-lg max-w-none pt-16">
                 <h1>{data.title}</h1>
                 {/*<p>{data.description}</p>*/}
-                {(data.bodyData as BlockType[]).map((item) => {
+                {(data.bodyData as Block[]).map((item) => {
                     switch (item.type) {
                         case "header":
 
@@ -96,9 +100,8 @@ export default function ArticleRenderer() {
                                 </ul>;
                             }
                         default:
-                            // @ts-ignore
                             return <pre className={"bg-red-400 "}>
-                                Error unknown type: {item.type}
+                                Error unknown type: {JSON.stringify(item)}
                                 {JSON.stringify(item)}
                             </pre>;
                     }
