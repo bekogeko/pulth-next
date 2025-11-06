@@ -5,9 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider        = "prisma-client-js"
-  output          = "../src/generated/prisma-client"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma-client"
 }
 
 datasource db {
@@ -140,8 +139,10 @@ model Article {
   slug        String @unique
 
   // body content in json format
-  // bodyData Json
-  // draftBodyData Json
+  // Array of blocks with type and data, e.g., { type: "paragraph", data: { text: "..." } }
+  // also has an draft version
+  bodyData      Json[] @default([])
+  draftBodyData Json[] @default([])
 
   isPublished Boolean  @default(false)
   keywords    String[] @default([])

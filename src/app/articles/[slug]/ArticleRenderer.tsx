@@ -2,6 +2,54 @@
 import {useQuery} from "@tanstack/react-query";
 import {useParams} from 'next/navigation'
 import {getArticleBySlug} from "@/app/actions/article";
+import {ReactNode} from "react";
+
+//
+// type BlockType = {
+//     id: string;
+//     type: "paragraph";
+//     data: {
+//         text: string;
+//     };
+// } | {
+//     id: string;
+//     type: "header";
+//     data: {
+//         text: string;
+//         level: number;
+//     }
+// } | {
+//     id: string;
+//     type: "list";
+//     data: {
+//         items: string[];
+//         style: "ordered" | "unordered";
+//     }
+// };
+type Block =
+    | { id: string; type: "paragraph"; data: { text: string } }
+    | { id: string; type: "header"; data: { text: string; level: number } }
+    | { id: string; type: "list"; data: { items: string[]; style: "ordered" | "unordered" } };
+
+function Header(props: { level: number, children: ReactNode }) {
+
+    switch (props.level) {
+        case 1:
+            return <h1>{props.children}</h1>;
+        case 2:
+            return <h2>{props.children}</h2>;
+        case 3:
+            return <h3>{props.children}</h3>;
+        case 4:
+            return <h4>{props.children}</h4>;
+        case 5:
+            return <h5>{props.children}</h5>;
+        case 6:
+            return <h6>{props.children}</h6>;
+        default:
+            return <div>{props.children}</div>;
+    }
+}
 
 export default function ArticleRenderer() {
 
@@ -12,14 +60,52 @@ export default function ArticleRenderer() {
         queryFn: () => getArticleBySlug(slug)
     });
 
+
     return <div>
         {isLoading && <p>Loading article...</p>}
         {isError && <p>Error loading article.</p>}
         {data && (
-            <article className="prose lg:prose-xl max-w-none pt-16">
+            <article className="prose-slate dark:prose-invert prose lg:prose-lg max-w-none pt-16">
                 <h1>{data.title}</h1>
-                <p>{data.description}</p>
-                {/*<div dangerouslySetInnerHTML={{__html: data.content}}/>*/}
+                {/*<p>{data.description}</p>*/}
+                {(data.bodyData as Block[]).map((item) => {
+                    switch (item.type) {
+                        case "header":
+
+                            return <Header key={item.id}
+                                           level={item.data.level}
+                            >
+                                {item.data.text}
+                            </Header>;
+                        case "paragraph":
+                            return <p key={item.id}>{item.data.text}</p>;
+                        case "list":
+                            if (item.data.style === "ordered") {
+                                return <ol
+                                    key={item.id}
+                                    className={"max-w-md space-y-1 text-gray-500 list-decimal list-inside dark:text-gray-400"}
+                                >
+                                    {item.data.items.map((listItem, index) => (
+                                        <li key={index} className={""}>{listItem}</li>
+                                    ))}
+                                </ol>;
+                            } else {
+                                return <ul
+                                    key={item.id}
+                                    className={"max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400"}
+                                >
+                                    {item.data.items.map((listItem, index) => (
+                                        <li key={index} className={""}>{listItem}</li>
+                                    ))}
+                                </ul>;
+                            }
+                        default:
+                            return <pre className={"bg-red-400 "}>
+                                Error unknown type: {JSON.stringify(item)}
+                                {JSON.stringify(item)}
+                            </pre>;
+                    }
+                })}
             </article>
         )}
     </div>;
