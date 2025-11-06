@@ -96,6 +96,7 @@ export default function ArticleRenderer() {
                                 </ul>;
                             }
                         default:
+                            // @ts-ignore
                             return <pre className={"bg-red-400 "}>
                                 Error unknown type: {item.type}
                                 {JSON.stringify(item)}
