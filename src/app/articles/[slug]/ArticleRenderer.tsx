@@ -5,6 +5,7 @@ import {getArticleBySlug, getArticles} from "@/app/actions/article";
 import {ReactNode} from "react";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
+import {Block} from "@/schemas/EditorTypes";
 
 //
 // type BlockType = {
@@ -28,10 +29,6 @@ import {Button} from "@/components/ui/button";
 //         style: "ordered" | "unordered";
 //     }
 // };
-type Block =
-    | { id: string; type: "paragraph"; data: { text: string } }
-    | { id: string; type: "header"; data: { text: string; level: number } }
-    | { id: string; type: "list"; data: { items: string[]; style: "ordered" | "unordered" } };
 
 function Header(props: { level: number, children: ReactNode }) {
 
@@ -134,7 +131,7 @@ export default function ArticleRenderer() {
 
         <div className="flex justify-between mt-8 pb-16">
             {previousArticle ? (
-                <Button asChild>
+                <Button asChild variant={"link"}>
                     <Link
                         href={`/articles/${previousArticle.slug}`}
                         className="text-blue-600 hover:underline"
@@ -144,7 +141,7 @@ export default function ArticleRenderer() {
                 </Button>
             ) : <div/>}
             {nextArticle ? (
-                <Button asChild>
+                <Button asChild variant={"link"}>
                     <Link
                         href={`/articles/${nextArticle.slug}`}
                         className="text-blue-600 hover:underline"

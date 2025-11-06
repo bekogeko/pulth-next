@@ -2,9 +2,13 @@
 
 import {useEffect, useEffectEvent, useRef} from "react";
 import EditorJS, {OutputBlockData} from "@editorjs/editorjs";
-import {useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery} from "@tanstack/react-query";
 import {useParams} from "next/navigation";
-import {getArticleBySlug} from "@/app/actions/article";
+import {getArticleBySlug, publishArticle} from "@/app/actions/article";
+import {Button} from "@/components/ui/button";
+import {BlockWithFallback} from "@/schemas/EditorTypes";
+import {Toast} from "next/dist/next-devtools/dev-overlay/components/toast";
+import {toast} from "sonner";
 
 export default function ArticleEditor() {
     const elementRef = useRef(null);
@@ -13,17 +17,6 @@ export default function ArticleEditor() {
     // get slug
     const {slug} = useParams<{ slug: string }>();
 
-
-    // const editor = new EditorJS({
-    //     holder: "editorjs",
-    //     autofocus: true,
-    //     onReady: () => {
-    //         console.log("Editor.js is ready to work!");
-    //     },
-    //     onChange: async () => {
-    //         console.log("Now I know that Editor's content changed!");
-    //     }
-    // });
 
     const onEditorReady = useEffectEvent(() => {
         console.log("Editor.js is ready to work!");
@@ -36,6 +29,14 @@ export default function ArticleEditor() {
     const {data, isLoading, isError} = useQuery({
         queryKey: ['articles', slug],
         queryFn: () => getArticleBySlug(slug)
+    });
+
+    const publishMutation = useMutation({
+        mutationKey: ["articles"], // rahat kal king
+        mutationFn: async (data: { slug: string, body: BlockWithFallback[] }) => publishArticle(data.slug, data.body),
+        onSuccess: (res) => {
+            toast.success(res.title);
+        }
     });
 
 
@@ -74,7 +75,21 @@ export default function ArticleEditor() {
 
 
     return <div className={"prose-base dark:prose-invert select-text dark:selection:text-indigo-500   "}>
+        <div className="flex justify-end mb-3">
+            <Button
+                variant={"outline"}
+                onClick={async () => {
+                    publishMutation.mutate({
+                        slug,
+                        body: (await editorRef.current?.save() ?? {}).blocks as unknown as BlockWithFallback[]
+                    })
+                }}
+            >
+                Publish Changes
+            </Button>
+        </div>
         <h1 className={"text-center mt-16"}>{!isLoading && data && data.title}</h1>
         <div id={"editorjs"} ref={elementRef} data-enable-grammarly="true"></div>
+
     </div>;
 }
