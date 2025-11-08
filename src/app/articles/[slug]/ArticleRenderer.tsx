@@ -6,6 +6,7 @@ import {ReactNode} from "react";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {Block} from "@/schemas/EditorTypes";
+import ListRenderer from "@/app/articles/[slug]/ListRenderer";
 
 //
 // type BlockType = {
@@ -100,25 +101,12 @@ export default function ArticleRenderer() {
                         case "paragraph":
                             return <p key={item.id}>{item.data.text}</p>;
                         case "list":
-                            if (item.data.style === "ordered") {
-                                return <ol
-                                    key={item.id}
-                                    className={"max-w-md space-y-1 text-gray-500 list-decimal list-inside dark:text-gray-400"}
-                                >
-                                    {item.data.items.map((listItem, index) => (
-                                        <li key={index} className={""}>{listItem}</li>
-                                    ))}
-                                </ol>;
-                            } else {
-                                return <ul
-                                    key={item.id}
-                                    className={"max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400"}
-                                >
-                                    {item.data.items.map((listItem, index) => (
-                                        <li key={index} className={""}>{listItem}</li>
-                                    ))}
-                                </ul>;
-                            }
+                            return <ListRenderer
+                                key={item.id}
+                                style={item.data.style}
+                                items={item.data.items}
+                                meta={item.data.meta}
+                            />
                         default:
                             return <pre className={"bg-red-400 "}>
                                 Error unknown type: {JSON.stringify(item)}

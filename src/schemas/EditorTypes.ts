@@ -23,12 +23,40 @@ const HeaderBlock = z.object({
     }),
 });
 
+const orderedMeta = z.object({
+    start: z.number(),
+    counterType: z.enum(["numeric", "lower-roman", "upper-roman", "lower-alpha", "upper-alpha"])
+})
+const checklistMeta = z.object({checked: z.boolean()});
+
+
+type ItemMeta = z.infer<typeof checklistMeta> | z.infer<typeof orderedMeta>;
+
+export type ListItemType = {
+    content: string;
+    meta: ItemMeta | {};
+    items?: ListItemType[];
+};
+
+let item: z.ZodType<ListItemType>;
+
+item = z.lazy(() =>
+    z.object({
+        content: z.string(),
+        meta: z.union([checklistMeta, orderedMeta]).optional(),
+        items: z.array(item).optional(),
+    }) as z.ZodType<ListItemType>
+);
+
+
 const ListBlock = z.object({
     id: z.string(),
     type: z.literal("list"),
     data: z.object({
-        items: z.array(z.string()),
-        style: z.union([z.literal("ordered"), z.literal("unordered")]),
+        items: z.array(item),
+        style: z.union([z.literal("ordered"), z.literal("unordered"), z.literal("checklist")]),
+        meta: z.union([orderedMeta, checklistMeta]),
+
     }),
 });
 
