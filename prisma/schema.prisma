@@ -166,7 +166,7 @@ model TagsOnArticles {
   topic   Topic  @relation(fields: [topicId], references: [id])
   topicId String
 
-  Article   Article @relation(fields: [articleId], references: [id])
+  article   Article @relation(fields: [articleId], references: [id])
   articleId String
 
   assignedAt   DateTime @default(now()) @updatedAt
