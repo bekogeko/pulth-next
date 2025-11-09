@@ -159,7 +159,7 @@ model Article {
   // Comments
   // Tags(topic?) on Articles
 
-  TagsOnArticles TagsOnArticles[]
+  tagsOnArticles TagsOnArticles[]
 }
 
 model TagsOnArticles {
