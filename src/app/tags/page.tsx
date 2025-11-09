@@ -1,15 +1,5 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import {rename} from "node:fs";
-
-export async function generateStaticParams() {
-    // const allTags = await prisma.topic.findMany({});
-    // //allArticleRoutes
-    //
-    // return allTags.map((tag) => {
-    //     return {tagSlug: tag.slug}
-    // })
-}
 
 export default async function TagPage(props: PageProps<'/tags'>) {
 
