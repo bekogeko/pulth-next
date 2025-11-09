@@ -10,7 +10,7 @@ export async function generateStaticParams() {
     })
 }
 
-export default async function TagPage(props: PageProps<'/tags/[tagSlug]'>) {
+export default async function TagSlugPage(props: PageProps<'/tags/[tagSlug]'>) {
     const {tagSlug} = await props.params;
 
     const topic = await prisma.topic.findUnique({
