@@ -74,94 +74,82 @@ model Verification {
 model Quiz {
   id      String @id @default(uuid())
   topicId String
-
-  question String
-  options  String[] // Array of options
-  answer   Int // Index of the correct option in the options array
+  slug    String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // one-to-many relationship with Topic
-  // A topic can have multiple quizzes
-  // A quiz belongs to one topic
-  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  topic     Topic      @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  questions Question[]
+}
+
+model Question {
+  id     String @id @default(uuid())
+  quizId String
+
+  question String
+  options  String[]
+  type     String   @default("radio") // "radio" or "checkbox"
+
+  answer Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@unique([quizId, question])
 }
 
 model Score {
-  id      String @id @default(uuid())
-  userId  String
-  topicId String
-
+  id        String   @id @default(uuid())
+  userId    String
+  topicId   String
   value     Int
   createdAt DateTime @default(now())
+  topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // many-to-one relationship with User and Topic
-  // A user can have multiple scores for different topics
-  // A topic can have multiple scores from different users
-  // A score belongs to one user and one topic
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  // Ensure a user can have only one score per topic
   @@unique([userId, topicId])
 }
 
-// topic of the quiz
 model Topic {
-  id          String  @id @default(uuid())
-  name        String  @unique
-  slug        String  @unique
-  description String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  scores         Score[]
+  id             String           @id @default(uuid())
+  name           String           @unique
+  description    String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  slug           String           @unique
   quizzes        Quiz[]
+  scores         Score[]
   TagsOnArticles TagsOnArticles[]
 
   @@unique([name, slug])
 }
 
 model Article {
-  id       String @id @default(uuid())
-  authorId String
-  author   User   @relation(fields: [authorId], references: [id])
-
-  title       String
-  description String
-  slug        String @unique
-
-  // body content in json format
-  // Array of blocks with type and data, e.g., { type: "paragraph", data: { text: "..." } }
-  // also has an draft version
-  bodyData      Json[] @default([])
-  draftBodyData Json[] @default([])
-
-  isPublished Boolean  @default(false)
-  keywords    String[] @default([])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Votes
-  // Comments
-  // Tags(topic?) on Articles
-
+  id             String           @id @default(uuid())
+  authorId       String
+  title          String
+  description    String
+  slug           String           @unique
+  isPublished    Boolean          @default(false)
+  keywords       String[]         @default([])
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  bodyData       Json[]           @default([])
+  draftBodyData  Json[]           @default([])
+  author         User             @relation(fields: [authorId], references: [id])
   tagsOnArticles TagsOnArticles[]
 }
 
 model TagsOnArticles {
-  topic   Topic  @relation(fields: [topicId], references: [id])
-  topicId String
-
-  article   Article @relation(fields: [articleId], references: [id])
-  articleId String
-
+  topicId      String
+  articleId    String
   assignedAt   DateTime @default(now()) @updatedAt
   assignedById String
+  article      Article  @relation(fields: [articleId], references: [id])
   assignedBy   User     @relation(fields: [assignedById], references: [id])
+  topic        Topic    @relation(fields: [topicId], references: [id])
 
   @@unique([topicId, articleId])
 }
