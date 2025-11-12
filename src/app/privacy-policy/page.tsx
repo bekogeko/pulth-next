@@ -1,3 +1,10 @@
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: 'Privacy Policy | Pulth',
+    description: 'Pulth is committed to protecting your privacy. Read our Privacy Policy to learn how we collect, use, and protect your personal information.',
+}
+
 export default async function PrivacyPolicyPage() {
 
     return <article className="privacy-policy prose dark:prose-invert prose-lg max-w-none pt-16 px-4 mx-auto">

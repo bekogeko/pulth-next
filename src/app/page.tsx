@@ -4,6 +4,11 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import LogoutButton from "@/app/ui/logoutButton";
 import { Button } from "@/components/ui/button";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Welcome to Pulth! Your Learning Hub",
+    description: "Unlock Your Potential with Our Cutting-Edge Learning Website! Explore a World of Knowledge, from Expert Tutorials to Interactive Courses.",
 
 export default async function Home() {
   const session = await auth.api.getSession({

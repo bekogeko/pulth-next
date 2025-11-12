@@ -8,6 +8,14 @@ import {
 } from "@tanstack/react-query";
 import { getArticles } from "@/app/actions/article";
 import ArticlesList from "@/app/articles/ArticleList";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Articles | Pulth",
+    description: "Articles for your usage of Pulth. Join our community now! Read articles, solve quizzes and discuss new topics.",
+    keywords: "articles, pulth, quizzes, community, discussion",
+    applicationName: "Pulth.com",
+};
 
 export default async function Home() {
   const session = auth.api.getSession({
