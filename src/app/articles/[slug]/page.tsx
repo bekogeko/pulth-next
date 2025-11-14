@@ -4,6 +4,8 @@ import ArticleRenderer from "@/app/articles/[slug]/ArticleRenderer";
 import {Metadata} from "next";
 import TagList from "@/app/articles/[slug]/TagList";
 import ArticleNavigation from "@/app/articles/[slug]/ArticleNavigation";
+import AuthorInfo from "@/app/articles/[slug]/AuthorInfo";
+import {getQueryClient} from "@/app/api/query";
 
 export async function generateMetadata(
     {
@@ -49,14 +51,14 @@ export default async function ArticleSlugPage(
 ) {
     const {slug} = await params;
 
-    const queryClient = new QueryClient();
+    const queryClient = getQueryClient();
     const articlePrefetch = queryClient.prefetchQuery({
         queryKey: ['articles', slug],
         queryFn: () => getArticleBySlug(slug)
     });
 
     const authorPrefetch = queryClient.prefetchQuery({
-        queryKey: ["articles", "author", slug],
+        queryKey: ["articles", slug, "author"],
         queryFn: () => getAuthorBySlug(slug)
     })
 
@@ -76,6 +78,9 @@ export default async function ArticleSlugPage(
                 maybe after author info
             */}
             <ArticleNavigation slug={slug}/>
+            <div className={"max-w-3xl mx-auto"}>
+                <AuthorInfo slug={slug}/>
+            </div>
 
             {/*    Votes  upvote, downvote*/}
             <TagList/>
