@@ -4,10 +4,14 @@ import {useQuery} from "@tanstack/react-query";
 import {getArticles} from "@/app/actions/article";
 import Link from "next/link";
 
-export default function ArticlesList() {
+export default function ArticlesList(props: { byAuthorId?: string }) {
     const {data, isLoading, isError} = useQuery({
         queryKey: ['articles'],
-        queryFn: getArticles
+        queryFn: getArticles,
+        // If byAuthorId is provided, filter articles by that author
+        select: (articles) => props.byAuthorId
+            ? articles.filter(article => article.authorId === props.byAuthorId)
+            : articles,
     });
 
     return <div className="pt-16">
