@@ -6,7 +6,7 @@ import {Toaster} from "@/components/ui/sonner";
 import {AppSidebar} from "@/components/sidebar";
 import {SidebarInset, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 
-import {GoogleTagManager} from '@next/third-parties/google'
+import {GoogleTagManager,GoogleAnalytics} from '@next/third-parties/google'
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -34,6 +34,7 @@ export default async function RootLayout({
     //   headers: await headers(),
     // });
 
+    // @ts-ignore
     return (
         <html lang="en" suppressHydrationWarning>
         <body
@@ -41,6 +42,8 @@ export default async function RootLayout({
         >
         {/*// <!-- Google tag (gtag.js) -->*/}
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ""}/>
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GTM_ID ?? ""}/>
+
 
         <Toaster richColors/>
         <Providers>
