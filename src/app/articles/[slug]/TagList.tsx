@@ -11,7 +11,7 @@ export default function TagList() {
         queryKey: ["articles", slug, "tags"],
         queryFn: () => getTagsOnArticleBySlug(slug),
     });
-    return <div>
+    return <div className="container mx-auto max-w-3xl">
         Tags:
         {data && data.map((topicEntry) => {
             return <Button asChild variant={"link"} key={topicEntry.topicId + topicEntry.articleId}>
