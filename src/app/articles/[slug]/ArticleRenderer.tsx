@@ -7,6 +7,7 @@ import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {Block} from "@/schemas/EditorTypes";
 import ListRenderer from "@/app/articles/[slug]/ListRenderer";
+import InlineRenderer from "@/app/articles/[slug]/InlineRenderer";
 
 //
 // type BlockType = {
@@ -72,11 +73,13 @@ export default function ArticleRenderer() {
                             case "header":
                                 return (
                                     <Header key={item.id} level={item.data.level}>
-                                        {item.data.text}
+                                        <InlineRenderer text={item.data.text}/>
                                     </Header>
                                 );
                             case "paragraph":
-                                return <p key={item.id}>{item.data.text}</p>;
+                                return <p key={item.id}>
+                                    <InlineRenderer text={item.data.text}/>
+                                </p>;
                             case "list":
                                 return (
                                     <ListRenderer
@@ -88,16 +91,16 @@ export default function ArticleRenderer() {
                                 );
                             default:
                                 return (
-                                    <pre className={"bg-red-400 "}>
-                    Error unknown type: {JSON.stringify(item)}
+                                    <pre className={"bg-red-400 "} key={item}>
+                                        Error unknown type: {JSON.stringify(item)}
                                         {JSON.stringify(item)}
-                  </pre>
+                                      </pre>
                                 );
                         }
                     })}
                 </article>
             )}
-            
+
         </div>
     );
 }

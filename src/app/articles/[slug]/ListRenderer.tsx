@@ -1,5 +1,6 @@
 import {ListItemType} from "@/schemas/EditorTypes"
 import IntrinsicAttributes = React.JSX.IntrinsicAttributes;
+import InlineRenderer from "@/app/articles/[slug]/InlineRenderer";
 
 function ListItem(props: IntrinsicAttributes & { item: ListItemType, style: "ordered" | "unordered" | "checklist" }) {
     return <li className={" [counter-increment: item] before:content-[counter(item)'. ']"}>
@@ -7,7 +8,7 @@ function ListItem(props: IntrinsicAttributes & { item: ListItemType, style: "ord
             "checked" in props.item.meta && <input checked={props.item.meta.checked} type="checkbox" readOnly/>
         }
 
-        {props.item.content}
+        <InlineRenderer text={props.item.content}/>
 
 
         {
