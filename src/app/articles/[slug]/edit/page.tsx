@@ -4,6 +4,8 @@ import ArticleEditor from "@/app/articles/[slug]/edit/ArticleEditor";
 import {dehydrate, HydrationBoundary, QueryClient} from "@tanstack/react-query";
 import {auth} from "@/lib/auth";
 import {headers} from "next/headers";
+import {getQueryClient} from "@/app/api/query";
+
 
 export async function generateMetadata(
     {
@@ -49,23 +51,23 @@ export default async function ArticleSlugEditPage(
         throw new Error("Unauthorized");
     }
     //
-    const queryClient = new QueryClient();
+    const queryClient = getQueryClient();
 
-    const articleFetch = await queryClient.fetchQuery({
+    const articleFetch = queryClient.fetchQuery({
         queryKey: ['articles', slug],
         queryFn: () => getArticleBySlug(slug)
     });
 
-    // const authorPrefetch = await queryClient.prefetchQuery({
-    //     queryKey: ["articles", "author", slug],
-    //     queryFn: () => getAuthorBySlug(slug)
-    // })
-    //
-    // await Promise.all([articlePrefetch, authorPrefetch]);
+    const authorPrefetch = queryClient.prefetchQuery({
+        queryKey: ["articles", "author", slug],
+        queryFn: () => getAuthorBySlug(slug)
+    })
 
-    // if (articleFetch.authorId !== session.user.id) {
-    //     throw new Error("Unauthorized");
-    // }
+    const [articleData, authorData] = await Promise.all([articleFetch, authorPrefetch]);
+
+    if (articleData.authorId !== session.user.id) {
+        throw new Error("Unauthorized");
+    }
 
     return <div>
         <HydrationBoundary state={dehydrate(queryClient)}>
