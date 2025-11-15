@@ -6,7 +6,8 @@ import {Toaster} from "@/components/ui/sonner";
 import {AppSidebar} from "@/components/sidebar";
 import {SidebarInset, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 
-import {GoogleTagManager,GoogleAnalytics} from '@next/third-parties/google'
+import {GoogleTagManager, GoogleAnalytics} from '@next/third-parties/google'
+import {ConsentBanner} from "@/components/ConsentBanner";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -55,6 +56,7 @@ export default async function RootLayout({
                         <SidebarTrigger/>
                         {children}
                     </main>
+                    <ConsentBanner/>
                 </SidebarInset>
 
             </SidebarProvider>
