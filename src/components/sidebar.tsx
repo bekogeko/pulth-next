@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {useSession} from "@/lib/auth-client";
+import posthog from "posthog-js";
 
 const itemList = [
     {
@@ -68,7 +69,11 @@ export function AppSidebar(props: {
                             {itemList.map((item) => (
                                 <SidebarMenuItem key={item.url}>
                                     <SidebarMenuButton asChild>
-                                        <Link href={item.url}>{item.name}</Link>
+                                        <Link href={item.url} onClick={
+                                            () => {
+                                                posthog.capture('sidebar_link_click', {url: item.url, name: item.name})
+                                            }
+                                        }>{item.name}</Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
