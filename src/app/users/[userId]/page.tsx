@@ -54,18 +54,24 @@ export default async function UserIdPage(props: PageProps<"/users/[userId]">) {
         queryFn: () => getArticlesByAuthorId(userId)
     });
 
-    const authorPrefetch = queryClient.prefetchQuery({
+    const authorFetch = queryClient.fetchQuery({
         // warning: maybe user?
         queryKey: ["author", userId],
         queryFn: () => getAuthorInfo(userId)
     });
 
-    await Promise.all([authorPrefetch, articlesByAuthorPrefetch]);
+    const [authorData] = await Promise.all([authorFetch, articlesByAuthorPrefetch]);
 
     return <div>
         <HydrationBoundary state={dehydrate(queryClient)}>
+
             <AuthorInfo authorId={userId}/>
-            {/*<AuthorArticleList authorId={userId}/>*/}
+            <h1>
+                Articles by{' '}
+                {
+                    authorData?.name
+                }
+            </h1>
             <ArticlesList byAuthorId={userId}/>
         </HydrationBoundary>
     </div>;
