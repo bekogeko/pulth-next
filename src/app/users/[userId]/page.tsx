@@ -6,8 +6,9 @@ import ArticlesList from "@/app/articles/ArticleList";
 import prisma from "@/lib/prisma";
 
 //generate metadata for user profile page
-export async function generateMetadata(props: { params: { userId: string } }) {
-    const {userId} = props.params;
+export async function generateMetadata(props: PageProps<"/users/[userId]">) {
+    const {userId} = await props.params;
+
 
     const userData = await prisma.user.findUnique({
         where: {id: userId},
@@ -23,6 +24,25 @@ export async function generateMetadata(props: { params: { userId: string } }) {
         keywords: `user, profile, ${userData?.name || ''}, pulth`,
         applicationName: "Pulth.com",
     }
+}
+
+export async function generateStaticParams() {
+    const users = await prisma.user.findMany({
+        where: {
+            articles: {
+                some: {
+                    isPublished: true,
+                }
+            }
+        },
+        select: {
+            id: true,
+        },
+    });
+
+    return users.map((user) => ({
+        userId: user.id,
+    }));
 }
 
 export default async function UserIdPage(props: PageProps<"/users/[userId]">) {
