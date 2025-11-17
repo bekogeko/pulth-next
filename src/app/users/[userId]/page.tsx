@@ -1,14 +1,14 @@
-import {getArticlesByAuthorId} from "@/app/actions/author";
+import {getArticlesByAuthorId, getAuthorInfo} from "@/app/actions/author";
 import {getQueryClient} from "@/app/api/query";
 import {dehydrate, HydrationBoundary} from "@tanstack/react-query";
 import AuthorInfo from "@/app/articles/[slug]/AuthorInfo";
 import ArticlesList from "@/app/articles/ArticleList";
 import prisma from "@/lib/prisma";
+import {Metadata} from "next";
 
 //generate metadata for user profile page
-export async function generateMetadata(props: PageProps<"/users/[userId]">) {
+export async function generateMetadata(props: PageProps<"/users/[userId]">): Promise<Metadata> {
     const {userId} = await props.params;
-
 
     const userData = await prisma.user.findUnique({
         where: {id: userId},
@@ -57,6 +57,7 @@ export default async function UserIdPage(props: PageProps<"/users/[userId]">) {
     const authorPrefetch = queryClient.prefetchQuery({
         // warning: maybe user?
         queryKey: ["author", userId],
+        queryFn: () => getAuthorInfo(userId)
     });
 
     await Promise.all([authorPrefetch, articlesByAuthorPrefetch]);
@@ -66,7 +67,6 @@ export default async function UserIdPage(props: PageProps<"/users/[userId]">) {
             <AuthorInfo authorId={userId}/>
             {/*<AuthorArticleList authorId={userId}/>*/}
             <ArticlesList byAuthorId={userId}/>
-
         </HydrationBoundary>
     </div>;
 }
