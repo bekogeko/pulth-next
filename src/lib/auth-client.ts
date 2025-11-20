@@ -1,4 +1,4 @@
-import { createAuthClient } from "better-auth/react"
+import {createAuthClient} from "better-auth/react"
 import {inferAdditionalFields} from "better-auth/client/plugins";
 
 
@@ -7,13 +7,19 @@ import {inferAdditionalFields} from "better-auth/client/plugins";
 //     baseURL: "http://localhost:3000"
 // })
 
-export const { signIn, signUp,signOut, useSession,getSession } = createAuthClient({
+export const {signIn, signUp, signOut, useSession, getSession} = createAuthClient({
     plugins: [
         inferAdditionalFields({
             user: {
-                role: {
+                description: {
                     type: 'string',
-                    required: true
+                    required: false,
+                    default: "Hi I'm new here!"
+                },
+                role: {
+                    type: "string",
+                    required: false,
+                    default: "user"
                 }
             }
         })

@@ -10,14 +10,16 @@ datasource db {
 }
 
 model User {
-  id             String           @id @default(uuid())
-  email          String           @unique
-  name           String
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @default(now()) @updatedAt
-  emailVerified  Boolean          @default(false)
-  image          String?
-  description    String           @default("Hi im new here")
+  id            String   @id @default(uuid())
+  email         String   @unique
+  name          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+  emailVerified Boolean  @default(false)
+  image         String?
+  description   String   @default("Hi im new here")
+  role          String   @default("user")
+
   articles       Article[]
   scores         Score[]
   tagsOnArticles TagsOnArticles[]
