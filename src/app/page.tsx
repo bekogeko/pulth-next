@@ -22,18 +22,25 @@ export default async function Home() {
             <p>You can solve quizzes, read articles and discuss the new topics</p>
 
             <div className="flex gap-2 items-center mt-4">
-                <Link
-                    href="/quizzes"
-                    className="border-green-500 bg-gray-800 hover:bg-gray-600 transition-colorsa duration-100 p-2 rounded"
-                >
-                    Quizzes
-                </Link>
-                <Link
-                    href="/articles"
-                    className="border-green-500 bg-gray-800 hover:bg-gray-600 transition-colorsa duration-100 p-2 rounded"
-                >
-                    Explore
-                </Link>
+
+                <Button asChild variant={"outline"}>
+                    <Link
+                        href="/quizzes"
+                        className="bg-background transition-colorsa duration-100 p-2 rounded"
+                    >
+                        Quizzes
+                    </Link>
+                </Button>
+
+                <Button asChild variant={"outline"}>
+                    <Link
+                        href="/articles"
+                        className="bg-background transition-colorsa duration-100 p-2 rounded"
+                    >
+                        Explore
+                    </Link>
+                </Button>
+
                 {!session && (
                     <>
                         <Button asChild variant={"outline"}>

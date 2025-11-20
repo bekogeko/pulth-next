@@ -26,7 +26,7 @@ export function ConsentBanner() {
         <div>
             {consentGiven === 'pending' && (
                 <div className="fixed bottom-0 bg-accent p-2 ">
-                    <p className="text-center text-white text-xl my-2">
+                    <p className="text-center text-foreground text-xl my-2">
                         We use tracking cookies to understand how you use
                         the product and help us improve it.
                         Please accept cookies to help us improve.

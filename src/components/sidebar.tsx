@@ -30,6 +30,10 @@ import posthog from "posthog-js";
 
 const itemList = [
     {
+        name: "Home",
+        url: "/",
+    },
+    {
         name: "Explore",
         url: "/articles",
     },
