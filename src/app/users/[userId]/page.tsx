@@ -1,10 +1,13 @@
-import {getArticlesByAuthorId, getAuthorInfo} from "@/app/actions/author";
+import {getArticlesByAuthorId, getAuthorInfo, getTagsByAuthorId} from "@/app/actions/author";
 import {getQueryClient} from "@/app/api/query";
 import {dehydrate, HydrationBoundary} from "@tanstack/react-query";
 import AuthorInfo from "@/app/articles/[slug]/AuthorInfo";
 import ArticlesList from "@/app/articles/ArticleList";
 import prisma from "@/lib/prisma";
 import {Metadata} from "next";
+import TagList from "@/app/articles/[slug]/TagList";
+import {Button} from "@/components/ui/button";
+import Link from "next/link";
 
 //generate metadata for user profile page
 export async function generateMetadata(props: PageProps<"/users/[userId]">): Promise<Metadata> {
@@ -60,18 +63,35 @@ export default async function UserIdPage(props: PageProps<"/users/[userId]">) {
         queryFn: () => getAuthorInfo(userId)
     });
 
-    const [authorData] = await Promise.all([authorFetch, articlesByAuthorPrefetch]);
+    const tagsFetch = queryClient.fetchQuery({
+        queryKey: ["tags", userId],
+        queryFn: () => getTagsByAuthorId(userId)
+    });
+
+    const [authorData, tagsData] = await Promise.all([authorFetch, tagsFetch, articlesByAuthorPrefetch]);
 
     return <div>
         <HydrationBoundary state={dehydrate(queryClient)}>
 
             <AuthorInfo authorId={userId}/>
-            <h1>
+            <h1 className={"text-3xl my-4"}>
                 Articles by{' '}
                 {
                     authorData?.name
                 }
             </h1>
+            <p>
+                Wrote on these tags:
+                {
+                    tagsData.map((topicEntry) => {
+                        return <Button asChild variant={"link"} key={topicEntry.topicId + topicEntry.articleId}>
+                            <Link href={`/tags/${topicEntry.topic.slug}`} className={"hover:bg-accent"}>
+                                {topicEntry.topic.name}
+                            </Link>
+                        </Button>
+                    })
+                }
+            </p>
             <ArticlesList byAuthorId={userId}/>
         </HydrationBoundary>
     </div>;

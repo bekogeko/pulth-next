@@ -19,5 +19,17 @@ export async function getAuthorInfo(authorId: string) {
         //     emailVerified: true
         // }
     })
+}
 
+export async function getTagsByAuthorId(authorId: string) {
+    return prisma.tagsOnArticles.findMany({
+        where: {
+            article: {
+                authorId: authorId
+            }
+        },
+        include: {
+            topic: true
+        }
+    });
 }
