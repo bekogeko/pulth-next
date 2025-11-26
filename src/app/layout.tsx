@@ -29,13 +29,7 @@ export default async function RootLayout({
                                          }: Readonly<{
     children: React.ReactNode;
 }>) {
-    // const cookieStore = await cookies();
-    // const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
-    // const sessData = await auth.api.getSession({
-    //   headers: await headers(),
-    // });
 
-    // @ts-ignore
     return (
         <html lang="en" suppressHydrationWarning>
         <body
