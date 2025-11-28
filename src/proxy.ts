@@ -12,30 +12,21 @@ export function proxy(request: NextRequest) {
         return NextResponse.next();
     }
 
-    const url = request.nextUrl.clone();
+    let url = request.nextUrl.clone()
+    const hostname = url.pathname.startsWith("/genuine/static/") ? 'eu-assets.i.posthog.com' : 'eu.i.posthog.com'
+    const requestHeaders = new Headers(request.headers)
 
-    const isStatic = url.pathname.startsWith("/genuine/static/");
-    const targetHost = isStatic
-        ? "eu-assets.i.posthog.com"
-        : "eu.i.posthog.com";
+    requestHeaders.set('host', hostname)
 
-    // Remove /genuine prefix
-    const originalPath = url.pathname;
-    url.pathname = originalPath.replace(/^\/genuine/, "");
+    url.protocol = 'https'
+    url.hostname = hostname
+    // url.port = 443
+    url.pathname = url.pathname.replace(/^\/genuine/, '');
 
-    url.hostname = targetHost;
-    url.protocol = "https";
-
-    const finalUrl = url.toString();
-
-    // console.log("PROXY →", originalPath, "→", finalUrl);
-
-    const res = NextResponse.next();
-    res.headers.set("x-middleware-rewrite", finalUrl);
-    res.headers.set("host", targetHost);
-
-    return res;
-
+    return NextResponse.rewrite(url, {
+        headers: requestHeaders,
+        status: 200,
+    })
 }
 
 // Alternatively, you can use a default export:
@@ -43,5 +34,5 @@ export function proxy(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-    matcher: ['/genuine/:path*'],
+    matcher: ['/genuine/:path*', '/genuine/static/:path*'],
 }
