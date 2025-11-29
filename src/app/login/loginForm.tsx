@@ -140,8 +140,8 @@ export function LoginForm({
                 </CardContent>
             </Card>
             <FieldDescription className="px-6 text-center">
-                By clicking continue, you agree to our <Link href="/terms-of-service">Terms of Service</Link>{" "}
-                and <a href="/privacy-policy">Privacy Policy</a>.
+                By continuing to login, you agree to our <Link href="/terms-of-service">Terms of Service</Link>,{" "}
+                <a href="/privacy-policy">Privacy Policy and Cookie Policy</a>.
             </FieldDescription>
         </div>
     )

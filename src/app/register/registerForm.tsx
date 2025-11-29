@@ -112,7 +112,6 @@ export function RegisterForm() {
                                         setIsPending(false);
                                     },
                                     onError: (ctx) => {
-                                        // throw ctx;   sadas
                                         toast.error(ctx.error.message);
                                     },
                                     onSuccess: (ctx) => {

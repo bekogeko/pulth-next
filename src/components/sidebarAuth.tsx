@@ -144,7 +144,7 @@ export function NavUser(props: { image: string, name: string, email: string, id:
                                 <AlertDialogAction type={"submit"} onClick={async () => {
                                     await signOut();
                                     posthog.reset();
-                                    router.refresh()
+                                    router.refresh();
                                 }}>Log out</AlertDialogAction>
                             </form>
                         </AlertDialogFooter>
