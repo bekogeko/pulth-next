@@ -117,12 +117,14 @@ export function LoginForm({
                                         onResponse: (ctx) => {
                                             setLoading(false);
                                         },
-                                        onSuccess: () => {
-                                            // posthog.identify(ctx.data.user.id, {
-                                            //     method: "google-login",
-                                            //     rememberMe: rememberMe,
-                                            // });
-                                            // posthog.opt_in_capturing()
+                                        onSuccess: (ctx) => {
+
+                                            posthog.identify(ctx.data.user.id, {
+                                                method: "google-login",
+                                                rememberMe: rememberMe,
+                                            });
+
+                                            posthog.opt_in_capturing()
                                         }
                                     });
                                 }}>
