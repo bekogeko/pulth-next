@@ -23,7 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
     });
 
-    // every user with at least one published article
+    // every user with more than one published article
     const authors = await prisma.user.findMany({
         where: {
             articles: {
@@ -31,8 +31,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                     isPublished: true,
                 }
             }
+        },
+        include: {
+            _count: {
+                select: {
+                    articles: {
+                        where: {
+                            isPublished: true,
+                        }
+                    }
+                }
+            }
         }
     });
+
+    // Filter to only include users with more than one published article
+    const authorsWithMultipleArticles = authors.filter(author => author._count.articles > 1);
 
     // Generate article URLs
     const articleUrls: MetadataRoute.Sitemap = articles.map((article) => ({
@@ -51,7 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
     // Generate author URLs
-    const authorUrls: MetadataRoute.Sitemap = authors.map((author) => ({
+    const authorUrls: MetadataRoute.Sitemap = authorsWithMultipleArticles.map((author) => ({
         url: `${baseUrl}/users/${author.id}`,
         lastModified: new Date(),
         changeFrequency: "monthly",
